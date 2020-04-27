@@ -16,18 +16,17 @@ export default class Index extends Component {
    * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
    */
   config: Config = {
-    navigationBarTitleText: '新闻',
+    navigationBarTitleText: '热门'
   }
 
   state = {
-    current: 0,
+    current: 0
   }
 
   onShareAppMessage() {
     return {
-      title: '新闻',
-      desc: 'Taro 开源微信新闻小程序',
-      path: '/pages/index/index',
+      title: '热门资讯',
+      path: '/pages/index/index'
     }
   }
 
@@ -35,17 +34,17 @@ export default class Index extends Component {
     switch (value) {
       case 0:
         Taro.setNavigationBarTitle({
-          title: '新闻',
+          title: '热门'
         })
         break
       case 1:
         Taro.setNavigationBarTitle({
-          title: '我的',
+          title: '我的'
         })
         break
     }
     this.setState({
-      current: value,
+      current: value
     })
   }
 
@@ -57,8 +56,8 @@ export default class Index extends Component {
         <AtTabBar
           fixed
           tabList={[
-            { title: '新闻', iconType: 'bullet-list' },
-            { title: '我的', iconType: 'user' },
+            { title: '热门', iconType: 'bullet-list' },
+            { title: '我的', iconType: 'user' }
           ]}
           current={this.state.current}
           onClick={this.handleClick.bind(this)}

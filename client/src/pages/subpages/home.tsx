@@ -8,6 +8,7 @@ export default class Home extends Component {
   state: any = {
     loading: false,
     current: 0,
+    currentPage: 0,
     apis: [
       {
         name: '热门',
@@ -74,7 +75,9 @@ export default class Home extends Component {
   }
   async handleClick(value) {
     this.setState({
-      current: value
+      news: [],
+      current: value,
+      currentPage: 0
     })
     const news = await this.getNews(this.state.apis[value].url)
     this.setState({
@@ -97,26 +100,36 @@ export default class Home extends Component {
   }
   async getNews(url) {
     this.setState({
-      loading: true,
-      news: []
+      loading: true
     })
-    const { result } = await Taro.cloud.callFunction({
-      name: 'getNews',
-      data: {
-        url
-      }
-    })
-    this.setState({
-      loading: false
-    })
-    return result
+    try {
+      const { result } = await Taro.cloud.callFunction({
+        name: 'getNews',
+        data: {
+          url
+        }
+      })
+      this.setState({
+        loading: false
+      })
+      return result
+    } catch (error) {
+      Taro.showToast({
+        title: '加载失败，请重试'
+      })
+      this.setState({
+        loading: false
+      })
+      return []
+    }
   }
   async loadMore() {
-    const currentPage = this.state.news.length / 20
+    const currentPage = this.state.currentPage + 1
     const url = `https://weixin.sogou.com/pcindex/pc/pc_${this.state.current}/${currentPage}.html`
-    const news = await this.getNews(url)
+    const news = this.state.news.concat(await this.getNews(url))
     this.setState({
-      news: this.state.news.concat(news)
+      news,
+      currentPage
     })
   }
   goToDetail(href) {
