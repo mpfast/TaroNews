@@ -9,36 +9,7 @@ export default class Home extends Component {
     loading: false,
     current: 0,
     currentPage: 0,
-    apis: [
-      {
-        name: '热门',
-        url: 'https://weixin.sogou.com'
-      },
-      {
-        name: '搞笑',
-        url: 'https://weixin.sogou.com/pcindex/pc/pc_1/pc_1.html'
-      },
-      {
-        name: '养生堂',
-        url: 'https://weixin.sogou.com/pcindex/pc/pc_2/pc_2.html'
-      },
-      {
-        name: '私房话',
-        url: 'https://weixin.sogou.com/pcindex/pc/pc_3/pc_3.html'
-      },
-      {
-        name: '八卦精',
-        url: 'https://weixin.sogou.com/pcindex/pc/pc_4/pc_4.html'
-      },
-      {
-        name: '科技咖',
-        url: 'https://weixin.sogou.com/pcindex/pc/pc_5/pc_5.html'
-      },
-      {
-        name: '财经迷',
-        url: 'https://weixin.sogou.com/pcindex/pc/pc_6/pc_6.html'
-      }
-    ],
+    apis: [],
     banner: [],
     news: []
   }
@@ -139,10 +110,20 @@ export default class Home extends Component {
   }
   async componentDidMount() {
     this.getBanner()
-    const news = await this.getNews(this.state.apis[this.state.current].url)
-    this.setState({
-      news: this.state.news.concat(news)
+    const { result } = await Taro.cloud.callFunction({
+      name: 'getApi'
     })
+    this.setState(
+      {
+        apis: result
+      },
+      async () => {
+        const news = await this.getNews(this.state.apis[this.state.current].url)
+        this.setState({
+          news: this.state.news.concat(news)
+        })
+      }
+    )
   }
   render() {
     const { current, news, banner } = this.state
